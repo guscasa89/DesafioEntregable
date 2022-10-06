@@ -4,6 +4,7 @@ let btnAlta;
 let btnCons;
 let btnBaja;
 let btnMod;
+let btnAddMenu;
 let btnLimpiar;
 let formulario;
 
@@ -12,6 +13,11 @@ let menu;
 
 let menuesPedidos = [];
 let pedidos = [];
+let alimentos = [];
+
+
+
+
 
 /**************************** funciones para administrar el DOM ****************************************/
 
@@ -21,6 +27,7 @@ function inicializarElementos() {
     btnCons = document.getElementById("btncons");
     btnBaja = document.getElementById("btnbaja");
     btnMod = document.getElementById("btnmod");
+    btnAddMenu = document.getElementById("btnaddmenu");
     btnLimpiar = document.getElementById("btnlimpiar");
 }
 
@@ -447,7 +454,7 @@ function modificarPedido() {
 
 
     let cadena = ``;
-    
+
     (pedidos.length > 0) && pedidos.forEach((pedido) => {
         cadena = cadena + `<option>${pedido.id}</option>`
     })
@@ -488,7 +495,7 @@ function validarFormularioSlcPedido(event) {
 
     divForm.style = "margin: 10px; border-radius: 20px;";
 
-    
+
 
 
     divForm.innerHTML =
@@ -685,7 +692,7 @@ function validarFormularioBaja(event) {
     let nroPedido = parseInt(slcPedido.options[slcPedido.selectedIndex].value);
 
     msjBajaConfirmacion(nroPedido);
-    
+
     limpiarDiv();
 
 }
@@ -705,7 +712,7 @@ function consultarPedido() {
 
 
     let cadena = ``;
-    
+
 
     pedidos.length > 0 && pedidos.forEach((pedido) => {
         cadena = cadena + `<option>${pedido.id}</option>`
@@ -764,15 +771,130 @@ function actualizarPedidosStorage() {
 
 function obtenerPedidosStorage() {
     let pedidosJSON = localStorage.getItem("pedidos");
-    
+
     if (pedidosJSON) {
-      pedidos = JSON.parse(pedidosJSON);
-    }
-    else
+        pedidos = JSON.parse(pedidosJSON);
+    } else
         pedidos = [];
-    
+
 
 }
+
+/************************************ Funciones de Prueba Fetch *********************************************/
+
+function agregarMenu() {
+
+    let divNuevoPrincipal = limpiarDiv()
+    limpiarDivMensajes()
+
+    let divForm = document.createElement("form");
+
+    divForm.id = "formulario";
+
+    divForm.innerHTML =
+        `<fieldset>
+    <legend>Agregar Menu:</legend>
+
+    <div class="form-group">
+      <label class="col-form-label col-form-label-sm mt-4" for="iptNombre">Nombre</label>
+      <input class="form-control form-control-sm" type="text" placeholder="Nombre comida" id="iptNombre">
+
+      <label class="col-form-label col-form-label-sm mt-4" for="iptPrecio">Precio</label>
+      <input class="form-control form-control-sm" type="number" placeholder="Solo numeros" id="iptPrecio">
+
+      <label class="col-form-label col-form-label-sm mt-4" for="iptPeso">Peso (gr)</label>
+      <input class="form-control form-control-sm" type="number" placeholder="Solo numeros" id="iptPeso">
+
+      <fieldset class="form-group">
+      <legend class="mt-4">Gluten?</legend>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="optionsGluten" id="optionsRadiosSi" value="Si" checked="">
+        <label class="form-check-label" for="optionsRadiosSi">
+          Si
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="optionsGluten" id="optionsRadiosNo" value="No">
+        <label class="form-check-label" for="optionsRadiosNo">
+          No
+        </label>
+      </div>
+      
+    </fieldset>
+
+    <fieldset class="form-group">
+      <legend class="mt-4">Tipo coccion</legend>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="optionsCoccion" id="optionsRadiosHorno" value="H" checked="">
+        <label class="form-check-label" for="optionsRadiosHorno">
+          Horno/sarten
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="optionsCoccion" id="optionsRadiosMicro" value="M">
+        <label class="form-check-label" for="optionsRadiosMicro">
+          Microondas
+        </label>
+      </div>
+      
+    </fieldset>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Agregar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+
+    </div>
+    </fieldset>
+    `;
+
+
+    divNuevoPrincipal.append(divForm);
+
+
+
+    formulario = document.getElementById("formulario");
+
+    formulario.onsubmit = (event) => validarFormularioAltaMenu(event);
+}
+
+function validarFormularioAltaMenu(event) {
+    event.preventDefault();
+
+
+    let inputNombre = document.getElementById("iptNombre");
+    let inputPrecio = document.getElementById("iptPrecio");
+    let inputPeso = document.getElementById("iptPeso");
+    let inputGluten = document.getElementsByName("optionsGluten");
+    let opcionGluten;
+    for (i = 0; i < inputGluten.length; i++) {
+        if (inputGluten[i].checked)
+            opcionGluten = inputGluten[i].value;
+    }
+    let gluten;
+    opcionGluten == 'Si' ? gluten = true : gluten = false;
+    
+    
+    let inputCoccion = document.getElementsByName("optionsCoccion");
+    let opcionCoccion;
+    for (i = 0; i < inputCoccion.length; i++) {
+        if (inputCoccion[i].checked)
+            opcionCoccion = inputCoccion[i].value;
+    }
+    let coccion;
+    opcionCoccion == 'H' ? coccion = 1 : coccion = 2;
+
+
+    //llamada al metodo fetch/post
+    const menu = new Menu(inputNombre.value, inputPrecio.value, inputPeso.value, gluten,coccion);
+    agregarMenuesServer(menu);
+    
+    
+
+    limpiarDiv();
+
+}
+
 
 /************************************ Menu Principal *********************************************/
 
@@ -797,6 +919,10 @@ function capturarEventos() {
         consultarPedido();
     }
 
+    btnAddMenu.onclick = () => {
+        agregarMenu();
+    }
+
     btnLimpiar.onclick = () => {
         limpiarStorage();
     }
@@ -807,7 +933,7 @@ function main() {
     inicializarElementos();
     capturarEventos();
     obtenerPedidosStorage();
-    
+    consultarMenuesServer();
 
 }
 

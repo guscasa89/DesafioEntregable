@@ -1,7 +1,7 @@
 function mostrarMensajeConfirmacion(mensaje) {
     Toastify({
         text: mensaje,
-        duration: 2000,
+        duration: 3000,
         close: true,
         style: {
             background: "linear-gradient(to left, rgb(2, 0, 36) 0%, rgb(92, 29, 29) 43%, rgb(242, 154, 46) 100%)",
