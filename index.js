@@ -187,18 +187,6 @@ function selectMenues() {
     cantidad = parseInt(selecteds[5].options[selecteds[5].selectedIndex].value);
     menuesPedidos.push(new MenuPedido(menues[5].nombre, cantidad))
 
-    /* **No me funcionó**
-
-        var i = 0;
-        //cantidades: [0] Sorrentinos [1] Cazuela [2] Pollo arrollado [3] Milanesa [4] Tarta [5] Bondiola
-        menues.forEach((menu) => {
-
-            var cantidad = parseInt(selecteds[i].options[selecteds[i].selectedIndex].value);
-            menuesPedidos.push(new MenuPedido(menu.nombre, cantidad))
-
-            i++;
-        })
-    */
 
     return menuesPedidos;
 
@@ -652,17 +640,7 @@ function bajaPedido() {
 
 
     let cadena = ``;
-    /*
-    if (pedidos.length > 0) {
-
-        
-        pedidos.forEach((pedido) => {
-            cadena = cadena + `<option>${pedido.id}</option>`
-        })
-
-
-    }
-    */
+    
     pedidos.length > 0 && pedidos.forEach((pedido) => {
         cadena = cadena + `<option>${pedido.id}</option>`
     })
